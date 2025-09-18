@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: polling_db
+      POSTGRES_USER: polling_user
+      POSTGRES_PASSWORD: polling_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  app:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql://polling_user:polling_password@db/polling_db
+    depends_on:
+      - db
+    volumes:
+      - ./:/app
+
+volumes:
+  postgres_data:
